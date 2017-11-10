@@ -55,10 +55,11 @@ namespace SnakeGame
             }
             try
             {
+                
                 Snake.Debug("create view");
-                sgv = new SnakeGameView(40, 40);
+                sgv = new SnakeGameView(80, 100);
                 Snake.Debug("create model");
-                sgm = new SnakeGameModel(40, 40);
+                sgm = new SnakeGameModel(80, 100);
                 Snake.Debug("create controller");
                 sgc = new SnakeGameController();
                 Snake.Debug("attach model");
@@ -69,6 +70,7 @@ namespace SnakeGame
                 Snake.Debug("set controller");
                 sgv.setController(sgc);
                 Snake.Debug("Start the controller");
+                SnakeGameModel.Speed = 1;
                 sgc.Start();
                 sgv.Run();
             } catch
@@ -100,7 +102,8 @@ namespace SnakeGame
             if(m is SnakeGameModel)
             {
                 SnakeGameModel sbm = m as SnakeGameModel;
-                SetScore((sbm.SnakeLength() - SnakeGameModel.SNAKE_INIT_SIZE).ToString());
+                //SetScore((sbm.SnakeLength() - SnakeGameModel.SNAKE_INIT_SIZE).ToString());
+                SetScore(sbm.Score.ToString());
             }
         }
 

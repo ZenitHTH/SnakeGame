@@ -6,11 +6,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
 
+
+
 namespace SnakeGame
 {
+    
+
     public class SnakeGameController : Controller
     {
         Timer timer;
+        Boolean check_passed = true;
 
         public SnakeGameController()
         {
@@ -24,26 +29,49 @@ namespace SnakeGame
         public void KeyUpHandled(KeyboardState ks)
         {
             int direction = -1;
-            Keys[] keys = ks.GetPressedKeys();
-           
-            if (keys.Contains(Keys.Up))
+            check_passed = false;
+            //  Keys[] keys = ks.GetPressedKeys();
+
+
+            //   if (keys.Contains(Keys.Up))
+            if (ks.IsKeyDown(Keys.Up))
             {
                 direction = SnakeGameModel.MOVE_UP;
+                check_passed = true;
             }
-            else if(keys.Contains(Keys.Down))
+            //   else if(keys.Contains(Keys.Down))
+            else if (ks.IsKeyDown(Keys.Down))
             {
                 direction = SnakeGameModel.MOVE_DOWN;
+                check_passed = true;
             }
-            else if(keys.Contains(Keys.Left))
+            //   else if(keys.Contains(Keys.Left))
+            else if (ks.IsKeyDown(Keys.Left))
             {
                 direction = SnakeGameModel.MOVE_LEFT;
+                check_passed = true;
             }
-            else if(keys.Contains(Keys.Right))
+            //   else if(keys.Contains(Keys.Right))
+            else if (ks.IsKeyDown(Keys.Right))
             {
                 direction = SnakeGameModel.MOVE_RIGHT;
+                check_passed = true;
             }
+            else if (ks.IsKeyDown(Keys.PageUp))
+            {
+                SnakeGameModel.Speed++;
+                System.Threading.Thread.SpinWait(500);
+            }
+            else if (ks.IsKeyDown(Keys.PageDown))
+            {
+                if (SnakeGameModel.Speed > 1) SnakeGameModel.Speed--;
+                System.Threading.Thread.SpinWait(500);
+            }
+           
             // Find all snakeboard model we know
             if (direction == -1) return;
+            
+
             foreach (Model m in mList)
             {
                 if (m is SnakeGameModel)
@@ -51,15 +79,19 @@ namespace SnakeGame
                     // Tell the model to update
                     SnakeGameModel sbm = (SnakeGameModel)m;
                     sbm.SetDirection(direction);
+                    
+                    
                 }
             }
+            
 
         }
 
 
         public void Start()
         {
-            timer.Enabled = true; 
+            timer.Enabled = true;
+            
         }
 
         public void Stop()
@@ -73,15 +105,18 @@ namespace SnakeGame
             Snake.Debug("TE");
             foreach (Model m in mList)
             {
-                if (m is SnakeGameModel)
-                {
-                    SnakeGameModel sbm = (SnakeGameModel)m;
-                    sbm.Move();
-                    sbm.Update();
-                }
+                if(check_passed)
+                    if (m is SnakeGameModel )
+                    {
+                        SnakeGameModel sbm = (SnakeGameModel)m;
+                        sbm.Move();
+                        sbm.Update();
+                    }
             }
             timer.Interval = SnakeGameModel.TIME_BASE / SnakeGameModel.Speed;
         }
+
+        
 
     }
 }

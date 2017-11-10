@@ -26,13 +26,15 @@ namespace SnakeGame
         public const int MOVE_UP = 1;
         public const int MOVE_RIGHT = 2;
         public const int MOVE_DOWN = 3;
+        
+
 
         public const int BOARD_EMPTY = 0;
         public const int BOARD_SNAKE = 1;
         public const int BOARD_FOOD = 2;
         public const int BOARD_WALL = 3;
 
-        public const int SNAKE_INIT_SIZE = 5;
+        public const int SNAKE_INIT_SIZE = 1;
 
         protected int[,] _board;
         protected Random rand;
@@ -41,6 +43,8 @@ namespace SnakeGame
         protected int direction;
         protected int curHeadX;
         protected int curHeadY;
+        protected int _score = 0;
+        
 
         protected ArrayList snakeBody;
         protected Boolean _isHit;
@@ -49,6 +53,9 @@ namespace SnakeGame
         public const int TIME_BASE = 250;
         public const int MAX_SPEED = 250;
         protected static int _speed = 1;
+
+        private int a;
+        private int z;
 
         public static int Speed
         {
@@ -66,9 +73,12 @@ namespace SnakeGame
         public Boolean isHit { get{ return _isHit; } }  // this property is also readonly for outsider
         public Boolean isEating { get { return _isEating;  } }
         public int[,] Board { get { return _board; } }
+        public int Score { get { return _score; } }
 
         public SnakeGameModel(int w, int h)
         {
+            a = w;
+            z = h;
             boardWidth = w; // width = w = X = col
             boardHeight = h;// height = h = Y = row
             _board = new int[w, h]; // order is X,Y
@@ -94,7 +104,7 @@ namespace SnakeGame
             snakeBody = new ArrayList();
             
          // random the first body sequence, set the head location on the bottom part of the screen
-            curHeadY = rand.Next(h/2) + 1;
+            curHeadY = rand.Next(h/3) + 1;
             curHeadX = rand.Next(w - 1) + 1;
             for (int i = 0; i != SNAKE_INIT_SIZE; i++)
             {
@@ -119,11 +129,14 @@ namespace SnakeGame
             // random new food
             int x, y;
             do
-            {
-                x = rand.Next(boardWidth);
-                y = rand.Next(boardHeight);
+            {                
+                    x = rand.Next(boardWidth);
+                    y = rand.Next(boardHeight);
+
             } while (isSnakeBody(x, y));
-            _board[x, y] = BOARD_FOOD;
+
+            if (x > 1 && y > 1 && x < a-1 && y < z-1) _board[x, y] = BOARD_FOOD;
+            else RandomFood();
         }
 
         protected bool isSnakeBody(int x, int y)
@@ -143,6 +156,8 @@ namespace SnakeGame
             direction = d;
         }
 
+        
+
         public void Move()
         {
             if (direction == MOVE_DOWN)
@@ -161,6 +176,7 @@ namespace SnakeGame
             {
                 curHeadX++;
             }
+            
 
             // hit myself?
             if (isSnakeBody(curHeadX, curHeadY))
@@ -175,10 +191,12 @@ namespace SnakeGame
                 return;
             }
             // hit food?
-            if (_board[curHeadX, curHeadY] == BOARD_FOOD)
-            {
-                _isEating = true;
-                Speed += 1;
+           if (_board[curHeadX, curHeadY] == BOARD_FOOD)
+           {
+                //_isEating = true;
+                RandomFood();
+                _score++;
+                
             }
             
             // add new head
