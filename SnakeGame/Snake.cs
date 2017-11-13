@@ -73,6 +73,7 @@ namespace SnakeGame
                 SnakeGameModel.Speed = 1;
                 sgc.Start();
                 sgv.Run();
+
             } catch
             {
                 Snake.Debug("Error starting game");
